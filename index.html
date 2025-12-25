@@ -1,0 +1,250 @@
+<!DOCTYPE html><html lang="en"><head>
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USMAN HTML ENCRYPTER</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <link href="css/all.min.css" rel="stylesheet">
+    
+    <style>
+        /* --- CORE THEME VARIABLES --- */
+        :root {
+            --primary-color: #007bff; /* Blue */
+            --success-color: #28a745; /* Green */
+            --warning-color: #ffc107; /* Yellow */
+            --info-color: #17a2b8; /* Cyan */
+            --secondary-color: #6c757d; /* Gray */
+            
+            --background-light: #f4f6f9;
+            --card-background: #ffffff; 
+            --text-dark: #212529; 
+            --border-light: #e9ecef; 
+        }
+
+        * {
+            font-family: 'Poppins', sans-serif;
+            box-sizing: border-box;
+            /* CRITICAL FIX: Ensure color inheritance is stable */
+            color: var(--text-dark);
+        }
+        
+        body {
+            background-color: var(--background-light); 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 15px;
+        }
+
+        /* --- Main Card/Container --- */
+        .card-theme {
+            background-color: var(--card-background);
+            border-radius: 20px; 
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.08); 
+            border: 1px solid var(--border-light);
+            width: 100%;
+            max-width: 800px; 
+        }
+
+        /* --- Input/Textarea --- */
+        .input-theme {
+            border: 1px solid var(--border-light) !important;
+            border-radius: 12px !important; 
+            background-color: var(--background-light) !important;
+            min-height: 250px; 
+            transition: all 0.3s ease;
+        }
+        .input-theme:focus {
+            border-color: var(--primary-color) !important;
+            box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.25) !important; 
+            background-color: #fff !important;
+        }
+        
+        /* Custom File Name Input (Small & Smart) */
+        .small-input-theme {
+            border: 1px solid var(--border-light) !important;
+            border-radius: 10px !important;
+            background-color: var(--background-light) !important;
+            padding: 8px 12px !important;
+            height: 40px;
+            font-size: 0.9rem;
+            box-shadow: none !important;
+        }
+
+        /* --- Buttons (Fixed Color Issues) --- */
+        .btn-theme {
+            border-radius: 12px !important; 
+            font-weight: 600 !important;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important;
+            transition: all 0.3s ease;
+            font-size: 1rem !important;
+            height: 50px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            cursor: pointer;
+            width: 100%;
+            /* Ensure text/icon is visible by setting white color as base */
+            color: white !important; 
+        }
+        .btn-primary { background-color: var(--primary-color) !important; }
+        .btn-secondary { background-color: var(--secondary-color) !important; }
+        .btn-success { background-color: var(--success-color) !important; }
+        .btn-warning { background-color: var(--warning-color) !important; color: var(--text-dark) !important; } /* Warning must have dark text */
+        .btn-info { background-color: var(--info-color) !important; }
+        .btn-light { 
+            background-color: #f1f1f1 !important; 
+            color: var(--text-dark) !important; /* Light must have dark text */
+            box-shadow: none !important;
+        }
+
+        /* --- TITLE STYLES (Matrix removed) --- */
+        .bungee-title {
+            font-family: 'Bungee', cursive;
+            color: var(--primary-color); 
+            letter-spacing: 2px;
+        }
+        
+        /* --- TOAST NOTIFICATION (BOTTOM CENTER) --- */
+        #centralToast {
+            position: fixed;
+            bottom: 20px; 
+            left: 50%;
+            transform: translate(-50%, 100%) scale(0.8); 
+            width: 350px;
+            background-color: var(--card-background);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.2);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            text-align: center;
+        }
+        #centralToast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, 0) scale(1);
+        }
+        
+        /* --- Modal Styles (Fit to Screen) --- */
+        #previewModal {
+            display: none; 
+            position: fixed;
+            inset: 0;
+            background-color: rgba(33, 37, 41, 0.9);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 15px;
+        }
+        #previewModal.flex {
+            display: flex; 
+        }
+        
+        #previewModal .modal-content {
+            background-color: white;
+            padding: 20px; 
+            border-radius: 20px;
+            width: 100%;
+            max-width: 90vw; 
+            max-height: 90vh; 
+            overflow-y: auto; 
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            /* Removed transition here for stability */
+        }
+
+        #previewIframe {
+            height: 300px;
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            background-color: white; 
+        }
+
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <div id="centralToast">
+        <i id="toastIcon" class="toast-icon"></i>
+        <p id="toastTitle" class="font-bold text-xl mb-1"></p>
+        <p id="toastMessage" class="text-md text-secondary-color"></p>
+        <a id="toastHostBtn" href="https://ftgm.pages.dev" target="_blank" class="toast-host-btn hidden hover:bg-white hover:text-primary-color border border-primary-color transition">
+            <i class="fas fa-globe mr-2"></i> Host Now
+        </a>
+    </div>
+
+    <div class="max-w-4xl mx-auto w-full p-4 md:p-0">
+        <header class="text-center mb-8 mt-6">
+            <h1 class="text-4xl md:text-6xl bungee-title mb-2 tracking-tight">Usman Encryptor</h1>
+            <p class="text-secondary-color text-lg max-w-2xl mx-auto">Encode, Preview, and Host your protected HTML/JS code.</p>
+        </header>
+
+        <section class="p-8 card-theme">
+            <h2 class="text-xl font-bold text-text-dark mb-4">
+                1. Paste Original Code (HTML/JS)
+            </h2>
+            <textarea id="inputCode" rows="10" placeholder="Paste your complete HTML structure or JavaScript snippet here..." class="w-full p-5 input-theme shadow-inner"></textarea>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+                
+                <input type="file" id="uploadInput" accept=".html,.htm,.txt" onchange="handleFileUpload(event)" class="hidden">
+                <button onclick="document.getElementById('uploadInput').click()" class="btn-theme btn-light">
+                    <i class="fas fa-file-upload mr-2"></i> Upload Html
+                </button>
+                
+                <button onclick="clearInput()" class="btn-theme btn-secondary">
+                    <i class="fas fa-eraser mr-2"></i> Clear Input
+                </button>
+
+                <button onclick="handleEncrypt()" id="encryptBtn" class="btn-theme btn-primary">
+                    <i class="fas fa-lock mr-2"></i> Encrypt & Preview
+                </button>
+            </div>
+        </section>
+    </div>
+    
+    <div id="previewModal">
+        <div class="modal-content">
+            <h3 class="text-2xl font-bold mb-4 text-primary-color">Encrypted Code Live Preview</h3>
+            
+            <div class="mb-6 relative">
+                <iframe id="previewIframe" title="Encrypted Code Preview" class="w-full"></iframe>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                
+                <button id="toggleCodeBtn" onclick="toggleCodeView()" class="btn-theme btn-info">
+                    <i class="fas fa-code mr-2"></i> See Code
+                </button>
+                
+                <button onclick="copyEncryptedCode()" class="btn-theme btn-success">
+                    <i class="fas fa-copy mr-2"></i> Copy Code
+                </button>
+                
+                <button onclick="downloadCode()" class="btn-theme btn-warning">
+                    <i class="fas fa-download mr-2"></i> Download
+                </button>
+                
+                <button onclick="hideModal()" class="btn-theme btn-secondary">
+                    <i class="fas fa-times mr-2"></i> Close
+                </button>
+            </div>
+            
+            <input type="text" id="downloadFileName" placeholder="Custom file name (Default: Encrypted_By_Usman.html)" class="w-full mt-4 small-input-theme">
+
+        </div>
+    </div>
+    
+    <div class="footer-content text-center mt-8 max-w-4xl mx-auto text-secondary-color">
+        <p>Developed By Usman | <a href="https://whatsapp.com/channel/0029Vb6SwB147XeCTHpikc0O" target="_blank" class="text-primary-color font-bold">Official Toolkit</a></p>
+    </div>
+
+    
+
+</body></html>
